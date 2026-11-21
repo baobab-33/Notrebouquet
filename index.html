@@ -1,11 +1,10 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Notre bouquet</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&family=DM+Sans:wght@400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#efedfa;--card:#ffffff;--ink:#2b2340;--mute:#6f6788;--acc:#d93a76;--accink:#ffffff;--line:#ddd8f0;--paper:#f5b9cd;--paper2:#e48aa9;--ribbon:#7a5cc4;--sky:#dff1fb;--w1:#e4daf8;--w2:#f6d9e8;--w3:#fde7dd;--tb1:#e9c9da;--tb2:#c9a0bd;--bk:255,255,255;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -30,14 +29,46 @@ input[type=date]{font:inherit;width:100%;padding:14px;border-radius:14px;border:
 .tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;margin:0 0 14px}
 .tabs button{flex:1;border:0;background:transparent;color:var(--mute);padding:10px;border-radius:999px;font-weight:600}
 .tabs button[aria-current=true]{background:var(--acc);color:var(--accink)}
-.stage{position:relative;border-radius:24px;padding:6px 0 0;overflow:hidden;background:linear-gradient(to top,transparent 29.2%,rgba(255,255,255,.7) 29.6%,transparent 30.2%),linear-gradient(to top,var(--tb2) 0,var(--tb1) 30%,transparent 30.01%),radial-gradient(ellipse 60% 45% at 85% 0%,rgba(255,244,214,.75),rgba(255,244,214,0)),radial-gradient(circle 70px at 18% 16%,rgba(var(--bk),.55),rgba(var(--bk),0)),radial-gradient(circle 46px at 82% 12%,rgba(var(--bk),.5),rgba(var(--bk),0)),radial-gradient(circle 90px at 92% 40%,rgba(var(--bk),.35),rgba(var(--bk),0)),radial-gradient(circle 40px at 8% 46%,rgba(var(--bk),.4),rgba(var(--bk),0)),radial-gradient(circle 56px at 68% 24%,rgba(var(--bk),.3),rgba(var(--bk),0)),radial-gradient(circle 30px at 36% 8%,rgba(var(--bk),.45),rgba(var(--bk),0)),linear-gradient(180deg,var(--w1),var(--w2) 60%,var(--w3))}
+.stage{position:relative;border-radius:24px;padding:6px 0 0;overflow:hidden;background:linear-gradient(to top,transparent 29.2%,rgba(255,255,255,.7) 29.6%,transparent 30.2%),linear-gradient(to top,var(--tb2) 0,var(--tb1) 30%,transparent 30.01%),radial-gradient(ellipse 60% 45% at 85% 0%,var(--glow,rgba(255,244,214,.75)),transparent 90%),radial-gradient(circle 70px at 18% 16%,rgba(var(--bk),.55),rgba(var(--bk),0)),radial-gradient(circle 46px at 82% 12%,rgba(var(--bk),.5),rgba(var(--bk),0)),radial-gradient(circle 90px at 92% 40%,rgba(var(--bk),.35),rgba(var(--bk),0)),radial-gradient(circle 40px at 8% 46%,rgba(var(--bk),.4),rgba(var(--bk),0)),radial-gradient(circle 56px at 68% 24%,rgba(var(--bk),.3),rgba(var(--bk),0)),radial-gradient(circle 30px at 36% 8%,rgba(var(--bk),.45),rgba(var(--bk),0)),linear-gradient(180deg,var(--w1),var(--w2) 60%,var(--w3))}
 .stage svg.b{width:100%;display:block}
 .sw{animation:sway 5s ease-in-out infinite alternate}
 @keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
 .head{transition:transform .9s ease,filter .9s ease;transform-origin:0 0}
 .thirsty .head{transform:translateY(9px) rotate(var(--r));filter:saturate(.45) brightness(.92)}
 .fl{cursor:pointer}
-.gl{width:100%;aspect-ratio:5/6}.row img{flex:none;width:64px;height:64px}.hero img{width:150px;height:150px;margin:0 auto 6px;display:block}
+.gl{width:100%;aspect-ratio:5/6;position:relative;z-index:1}
+.stage>svg.b{position:relative;z-index:1}.rain{z-index:2}
+.deco{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;filter:brightness(var(--dim,1))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .deco{filter:brightness(var(--dim,1))}}
+:root[data-theme="dark"] .deco{filter:brightness(var(--dim,1))}
+.bulb{animation:tw 3s ease-in-out infinite}@keyframes tw{0%,100%{opacity:.4}50%{opacity:1}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:fk .9s ease-in-out infinite}@keyframes fk{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.15)}}
+@media (prefers-reduced-motion:reduce){.bulb,.flame{animation:none}}
+.streak{position:absolute;top:10px;left:10px;z-index:3;display:flex;align-items:center;gap:6px;background:var(--card);color:var(--ink);border:2px solid var(--sc);border-radius:999px;padding:5px 12px 5px 7px;font-size:.8rem;filter:drop-shadow(0 2px 6px rgba(0,0,0,.2));transition:border-color .6s}
+.streak svg{width:24px;height:24px}.streak b{font-family:"Fraunces",Georgia,serif;font-size:1.15rem}.streak span{color:var(--mute)}
+.bloomov{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:70px 14px 14px;background:linear-gradient(transparent,rgba(20,10,40,.55) 45%);display:flex;justify-content:center}
+.bcard{background:var(--card);color:var(--ink);border-radius:18px;padding:14px 16px;text-align:center;width:100%;opacity:0;animation:bin .8s 2.6s forwards}
+@keyframes bin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.bcard h2{font-size:1.15rem}.bcard p{margin:.4em 0 .8em;font-size:.9rem}
+.can{position:absolute;right:12px;bottom:16%;z-index:5;width:72px;text-align:center;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.can:not(.drag){animation:nudge 2.4s ease-in-out infinite}@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px)}}
+.can svg{width:60px;display:block;margin:0 auto;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));transition:transform .25s}
+.can.pour svg{transform:rotate(-32deg);transform-origin:80% 80%}.can.drag{cursor:grabbing}
+.can span{display:block;font-size:.65rem;line-height:1.2;color:var(--ink);background:var(--card);border-radius:8px;padding:2px 5px;margin-top:3px}
+.pbar{position:absolute;left:14%;right:14%;bottom:8px;height:6px;border-radius:6px;background:rgba(255,255,255,.45);z-index:5;opacity:0;transition:opacity .3s}
+.pbar.on{opacity:1}.pbar i{display:block;height:100%;width:0;border-radius:6px;background:#4aa3e8}
+.letter{position:absolute;left:66%;bottom:1.5%;width:19%;z-index:3;background:none;border:0;padding:0;cursor:pointer;animation:lp 3s ease-in-out infinite}
+.letter svg{display:block;width:100%;transform:rotate(-8deg);transition:transform .2s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.letter:hover svg{transform:rotate(-3deg) scale(1.08)}@keyframes lp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.ltov{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;background:rgba(20,10,40,.6);animation:fin .3s}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.paper{background:repeating-linear-gradient(transparent 0 27px,rgba(150,120,90,.18) 27px 28px),#fff8e8;color:#6b2a3a;width:82%;padding:26px 18px 18px;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.4);text-align:center;transform:rotate(-1.5deg);animation:rise .6s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes rise{from{opacity:0;transform:translateY(40px) rotate(-6deg) scale(.85)}to{opacity:1;transform:rotate(-1.5deg)}}
+.bigheart{width:84px;filter:drop-shadow(0 3px 5px rgba(160,20,50,.35));animation:beat 1.2s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.12)}30%{transform:scale(1)}45%{transform:scale(1.08)}}
+.love{font-family:"Caveat","Segoe Script","Brush Script MT",cursive;font-size:3.2rem;margin:.1em 0 .4em;line-height:1}
+@media (prefers-reduced-motion:reduce){.letter,.bigheart,.paper,.ltov{animation:none}}
+@media (prefers-reduced-motion:reduce){.can:not(.drag){animation:none}.bcard{animation-duration:.01s;animation-delay:0s}}.row img{flex:none;width:64px;height:64px}.hero img{width:150px;height:150px;margin:0 auto 6px;display:block}
 .rain{position:absolute;inset:0;pointer-events:none}
 .rain i{position:absolute;top:-20px;width:7px;height:12px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#6bb8f0;opacity:0;animation:drop 1s ease-in forwards}
 @keyframes drop{0%{opacity:.9;transform:translateY(0)}100%{opacity:0;transform:translateY(300px)}}
@@ -245,18 +276,18 @@ const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32Bu
 const GC={},flowerGeo=id=>GC[id]||(GC[id]=flower3(id));
 let cur=null;
 function kill3d(){if(cur){cancelAnimationFrame(cur.raf);if(cur.ro)cur.ro.disconnect();cur.ren.dispose();if(cur.ren.forceContextLoss)cur.ren.forceContextLoss();cur=null}}
-function lights(sc,sh){sc.add(new THREE.HemisphereLight(0xffffff,0xd9c3d6,.85));const d=new THREE.DirectionalLight(0xfff1dd,1.15);d.position.set(5,10,8);
+function lights(sc,sh){const hm=new THREE.HemisphereLight(0xffffff,0xd9c3d6,.85);sc.add(hm);const d=new THREE.DirectionalLight(0xfff1dd,1.15);d.position.set(5,10,8);
 if(sh){d.castShadow=true;d.shadow.mapSize.set(2048,2048);const s=d.shadow.camera;s.left=-9;s.right=9;s.top=11;s.bottom=-3;s.near=1;s.far=30;d.shadow.bias=-.0004;d.shadow.normalBias=.03}
-sc.add(d);const f=new THREE.DirectionalLight(0xdde6ff,.35);f.position.set(-6,4,5);sc.add(f)}
+sc.add(d);const f=new THREE.DirectionalLight(0xdde6ff,.35);f.position.set(-6,4,5);sc.add(f);const lp=new THREE.PointLight(0xffb870,0,40);lp.position.set(-4.5,5,7);sc.add(lp);return{hm,d,f,lp}}
 function brickTex(){const c=document.createElement("canvas");c.width=c.height=256;const x=c.getContext("2d");x.fillStyle="#f4a9c3";x.fillRect(0,0,256,256);x.strokeStyle="#d7789c";x.lineWidth=4;
 for(let r=0;r<4;r++){const y=r*64;x.beginPath();x.moveTo(0,y);x.lineTo(256,y);for(let k=0;k<5;k++){const px=(r%2)*32+k*64;x.moveTo(px,y);x.lineTo(px,y+64)}x.stroke()}
 const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(3,2);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t}
-function mount3d(stage,list,thirsty,pick){kill3d();const host=stage&&stage.querySelector(".gl");if(!GL||!host)return null;
+function mount3d(stage,list,thirsty,pick,opt={}){kill3d();const host=stage&&stage.querySelector(".gl");if(!GL||!host)return null;
 try{let W=host.clientWidth||400,H=Math.round(W*1.2);
 const ren=new THREE.WebGLRenderer({antialias:true,alpha:true});ren.setPixelRatio(Math.min(window.devicePixelRatio||1,2));ren.setSize(W,H,false);
 ren.outputEncoding=THREE.sRGBEncoding;ren.toneMapping=THREE.ACESFilmicToneMapping;ren.toneMappingExposure=1.15;ren.shadowMap.enabled=true;ren.shadowMap.type=THREE.PCFSoftShadowMap;
 const cv=ren.domElement;cv.style.cssText="display:block;width:100%;height:auto;touch-action:pan-y";host.appendChild(cv);cur={ren,raf:0};
-const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,W/H,.1,100);cam.position.set(0,4.5,19.5);cam.lookAt(0,3.7,0);lights(sc,true);
+const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,W/H,.1,100);cam.position.set(0,4.5,19.5);cam.lookAt(0,3.7,0);const LT=lights(sc,true);
 const gr=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.ShadowMaterial({opacity:.3}));gr.rotation.x=-Math.PI/2;gr.receiveShadow=true;sc.add(gr);
 const root=new THREE.Group();sc.add(root);
 const pts=[[0,0],[1.05,0],[1.25,.12],[1.55,.9],[1.5,1.6],[1.15,2.2],[1.02,2.45],[1.12,2.58],[1.05,2.66],[.9,2.6]].map(p=>new THREE.Vector2(p[0],p[1]));
@@ -270,21 +301,42 @@ const pm=new THREE.MeshStandardMaterial({vertexColors:true,side:THREE.DoubleSide
 const cap=Math.min(68,24+N*5)*DG,rho=3.5,A=2*Math.PI*rho*rho*(1-Math.cos(cap)),sz=Math.max(.45,Math.min(1.5,Math.sqrt(A/Math.max(N,1))*.6));
 list.forEach((f,i)=>{const th=cap*Math.sqrt((i+.5)/N),ph=i*2.39996,dir=new V3(Math.sin(th)*Math.cos(ph),Math.cos(th),Math.sin(th)*Math.sin(ph)),pos=dir.clone().multiplyScalar(rho+(i%3)*.18).add(new V3(0,2.4,0));
 const g=new THREE.Mesh(flowerGeo(f.id),pm);g.castShadow=g.receiveShadow=true;g.userData.i=i;meshes.push(g);
-const dr=new THREE.Group();dr.add(g);const h=new THREE.Group();h.position.copy(pos);h.quaternion.setFromUnitVectors(new V3(0,1,0),dir);h.scale.setScalar(sz);h.add(dr);root.add(h);heads.push(dr);
+const dr=new THREE.Group();dr.add(g);const h=new THREE.Group();h.position.copy(pos);h.quaternion.setFromUnitVectors(new V3(0,1,0),dir);h.scale.setScalar(sz);h.add(dr);root.add(h);heads.push({h,dir:dir.clone(),sz,ph});
 const st=new V3((sr()-.5)*.5,2.3,(sr()-.5)*.5),end=pos.clone().sub(dir.clone().multiplyScalar(.3*sz)),ctl=new V3(st.x+(end.x-st.x)*.3,st.y+(end.y-st.y)*.55,st.z+(end.z-st.z)*.3);
 const tb=new THREE.Mesh(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(st,ctl,end),14,.055,6),sm);tb.castShadow=true;root.add(tb)});
-let thirst=thirsty&&N?1:0,tgt=thirst,ry=0,vel=0,drag=false,lx=0,moved=0;
+const UP=new V3(0,1,0),DN=new V3(0,-1,0);
+applyTod(stage,tod());applyLights(LT,tod());
+let S=opt.streak||0,bl=null,bry=0,lt=0,ltod=0,vb=0,vbee=0,vgp=0;const spk=[];
+if(opt.bloom!=null&&heads[opt.bloom]){const q=heads[opt.bloom].ph-Math.PI/2;bl={i:opt.bloom,t:0,target:((q+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI}}
+const bf=makeButterfly(),bee=makeBee(),gp=new THREE.Group(),gps=[];root.add(bf.g,bee.g);
+const gg=goldGeo(),gmt=new THREE.MeshStandardMaterial({vertexColors:true,side:THREE.DoubleSide,metalness:.5,roughness:.35,emissive:0x6a4a00,emissiveIntensity:.35});
+for(let k=0;k<26;k++){const m=new THREE.Mesh(gg,gmt);gps.push({m,x:(Math.random()-.5)*9,z:(Math.random()-.5)*5,y:Math.random()*9,v:.5+Math.random()*.5,s:Math.random()*6,rx:Math.random()*2,rz:Math.random()*2});gp.add(m)}sc.add(gp);
+const sparkle=o=>{const n=60,g=new THREE.BufferGeometry(),p=new Float32Array(n*3),v=[];for(let k=0;k<n;k++){const a=Math.random()*6.28,r=Math.random()*1.2*o.sz;p[k*3]=o.h.position.x+Math.cos(a)*r;p[k*3+1]=o.h.position.y+Math.random()*.6;p[k*3+2]=o.h.position.z+Math.sin(a)*r;v.push(.3+Math.random()*.8)}
+g.setAttribute("position",new THREE.BufferAttribute(p,3));const m=new THREE.PointsMaterial({color:0xffd86a,size:.22,transparent:true,opacity:1,depthWrite:false,blending:THREE.AdditiveBlending}),pt=new THREE.Points(g,m);root.add(pt);spk.push({pt,v,m,age:0})};
+const extra=t=>{const dt=Math.min(.05,Math.max(0,(t-lt)/1000)),s=t/1000;lt=t;
+if(t-ltod>60000){ltod=t;const T=tod();applyTod(stage,T);applyLights(LT,T)}
+if(bl){bl.t+=dt;const k=Math.max(0,Math.min(1,(bl.t-.8)/3.2)),e=k*k*(3-2*k),o=heads[bl.i];o.h.quaternion.setFromUnitVectors(UP,o.dir);o.h.scale.set(o.sz*(.2+.8*e),o.sz*(.5+.5*Math.min(1,e*1.4)),o.sz*(.2+.8*e));bry+=(bl.target-bry)*.04;cam.position.z+=(15.5-cam.position.z)*.03;if(k>.85&&!bl.sp){bl.sp=1;sparkle(o)}}
+else{bry+=(0-bry)*.04;cam.position.z+=(19.5-cam.position.z)*.03}
+const ok=thirst<.3&&!bl;vb+=((ok&&S>=7?1:0)-vb)*.05;vbee+=((ok&&S>=14?1:0)-vbee)*.05;vgp+=((ok&&S>=30?1:0)-vgp)*.05;
+bf.g.visible=vb>.02;if(bf.g.visible){const pp=x=>{const a=x*.55;return new V3(5.4*Math.cos(a),5+1.4*Math.sin(a*2.1),4.4*Math.sin(a))},h0=heads[0],L=h0?h0.h.position.clone().add(h0.dir.clone().multiplyScalar(h0.sz*.9)):new V3(0,6,0),ph=s%24,cu=pp(s);let p=cu,rest=0;
+if(ph>=9&&ph<11.5){const u=(ph-9)/2.5;p=cu.clone().lerp(L,u*u*(3-2*u))}else if(ph>=11.5&&ph<21){p=L;rest=1}else if(ph>=21){const u=(ph-21)/3;p=L.clone().lerp(cu,u*u*(3-2*u))}
+bf.g.position.copy(p);if(!rest)bf.g.lookAt(pp(s+.05));const a=rest?.9+.12*Math.sin(s*1.6):.45+.6*Math.sin(s*18);bf.wr.rotation.z=a;bf.wl.rotation.z=-a;bf.g.scale.setScalar(.55*vb)}
+bee.g.visible=vbee>.02;if(bee.g.visible){const f=x=>new V3(4.6*Math.sin(x*.9),5.6+1.3*Math.sin(x*1.4+1),3.2*Math.cos(x*.7)),w=.8*Math.sin(s*60);bee.g.position.copy(f(s));bee.g.lookAt(f(s+.05));bee.w1.rotation.z=w;bee.w2.rotation.z=-w;bee.g.scale.setScalar(vbee)}
+gp.visible=vgp>.02;if(gp.visible)gps.forEach(o=>{o.y-=o.v*dt*1.2;if(o.y<.2)o.y=9+Math.random()*2;o.m.position.set(o.x+Math.sin(s*.8+o.s)*.6,o.y,o.z);o.m.rotation.set(o.rx+s*.8,o.s+s*.5,o.rz+s*.6);o.m.scale.setScalar(.55*vgp)});
+for(let k=spk.length-1;k>=0;k--){const o=spk[k];o.age+=dt;const p=o.pt.geometry.attributes.position;for(let i=0;i<o.v.length;i++)p.setY(i,p.getY(i)+o.v[i]*dt);p.needsUpdate=true;o.m.opacity=Math.max(0,1-o.age/2.5);if(o.age>2.5){root.remove(o.pt);o.pt.geometry.dispose();o.m.dispose();spk.splice(k,1)}}
+cam.lookAt(0,3.7,0)};
+let thirst=N?(+thirsty||0):0,tgt=thirst,ry=0,vel=0,drag=false,lx=0,moved=0;
 cv.onpointerdown=e=>{drag=true;lx=e.clientX;moved=0;cv.setPointerCapture(e.pointerId)};
 cv.onpointermove=e=>{if(!drag)return;const dx=e.clientX-lx;lx=e.clientX;moved+=Math.abs(dx);ry+=dx*.008;vel=dx*.0008};
 cv.onpointerup=e=>{drag=false;if(moved<5&&pick){const bb=cv.getBoundingClientRect(),m=new THREE.Vector2((e.clientX-bb.left)/bb.width*2-1,-((e.clientY-bb.top)/bb.height)*2+1),rc=new THREE.Raycaster();rc.setFromCamera(m,cam);const hit=rc.intersectObjects(meshes,false)[0];if(hit)pick(hit.object.userData.i)}};
 const me=cur;
 function frame(t){me.raf=requestAnimationFrame(frame);if(!host.isConnected){kill3d();return}
-thirst+=(tgt-thirst)*.06;pm.color.setRGB(1-.2*thirst,1-.3*thirst,1-.42*thirst);
-heads.forEach((d,i)=>{d.rotation.x=thirst*.75+Math.sin(t*.0009+i)*.02;d.position.y=-thirst*.35});
-if(!drag){ry+=vel;vel*=.95}root.rotation.y=ry+Math.sin(t*.0004)*.05;ren.render(sc,cam)}
+thirst+=(tgt-thirst)*.06;pm.color.setRGB(1-.3*thirst,1-.45*thirst,1-.6*thirst);gm.color.setRGB(1-.15*thirst,1-.2*thirst,1-.55*thirst);
+heads.forEach((o,i)=>{const dd=o.dir.clone();dd.x+=Math.sin(t*.0009+i)*.02;o.h.quaternion.setFromUnitVectors(UP,dd.lerp(DN,Math.min(.92,thirst*.95)).normalize());o.h.scale.setScalar(o.sz*(1-.16*thirst))});
+if(!drag){ry+=vel;vel*=.95}extra(t);root.rotation.y=ry+Math.sin(t*.0004)*.05+bry;ren.render(sc,cam)}
 me.raf=requestAnimationFrame(frame);
 me.ro=new ResizeObserver(()=>{const w=host.clientWidth;if(w&&Math.abs(w-W)>2){W=w;H=Math.round(W*1.2);ren.setSize(W,H,false);cam.aspect=W/H;cam.updateProjectionMatrix()}});me.ro.observe(host);
-return{water(){tgt=0}}}catch(e){kill3d();host.innerHTML=bouquetSVG(list,thirsty);return null}}
+return{water(n){tgt=0;if(n)S=n},endBloom(){bl=null}}}catch(e){kill3d();host.innerHTML=bouquetSVG(list,thirsty);return null}}
 let IR=null;const IC={};
 function icon3d(f){if(IC[f.id])return IC[f.id];
 if(!IR){IR=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});IR.setSize(192,192);IR.outputEncoding=THREE.sRGBEncoding;IR.toneMapping=THREE.ACESFilmicToneMapping;IR.toneMappingExposure=1.15}
@@ -294,7 +346,27 @@ g.rotation.x=["spike","cone","tul","lily","gyp"].includes(F3[f.id].k)?.35:1.05;s
 const bx=new THREE.Box3().setFromObject(g),c=bx.getCenter(new V3()),s=bx.getSize(new V3());g.position.sub(c);cam.position.set(0,0,Math.max(s.x,s.y)*1.9+s.z/2+1);cam.lookAt(0,0,0);
 IR.render(sc,cam);return IC[f.id]=IR.domElement.toDataURL("image/png")}
 const mini=f=>{if(GL){try{return `<img src="${icon3d(f)}" alt="">`}catch(e){}}return `<svg viewBox="-36 -40 72 74" aria-hidden="true">${defs([f.id])}${head(f,1.05)}</svg>`};
-function bouquet(list,thirsty){return GL?`<div class="gl"></div>`:bouquetSVG(list,thirsty)}
+const DECO=(()=>{let bu="";
+for(let k=1;k<=11;k++){const t=k/12,u=1-t,x=(u*u*-10+2*t*u*200+t*t*410).toFixed(1),y=(u*u*16+2*t*u*96+t*t*16).toFixed(1),c=["#ffd98a","#ffb3cf","#cbb5ff","#a8e0ff"][k%4];
+bu+=`<g class="bulb" style="animation-delay:${(k%5)*.55}s"><circle cx="${x}" cy="${+y+9}" r="9" fill="${c}" opacity=".3"/><ellipse cx="${x}" cy="${+y+8}" rx="3" ry="4.2" fill="${c}"/></g>`}
+const pe=[[130,440,-30,"#f9a8c4"],[260,452,20,"#ffe08a"],[70,430,50,"#d9b8ff"],[330,430,-10,"#f9a8c4"],[180,455,10,"#ffe08a"],[40,455,25,"#ffe08a"]].map(p=>`<ellipse cx="${p[0]}" cy="${p[1]}" rx="6" ry="3.2" fill="${p[3]}" transform="rotate(${p[2]} ${p[0]} ${p[1]})"/>`).join("");
+const bf=(x,y,s,c)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0C-10-12-20-6-14 4C-10 10-2 6 0 0ZM0 0C10-12 20-6 14 4C10 10 2 6 0 0Z" fill="${c}" opacity=".85"/><path d="M0-3V7" stroke="#5b4048" stroke-width="1.5"/></g>`;
+return `<svg class="deco" viewBox="0 0 400 480" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<path d="M-10 16Q200 96 410 16" stroke="rgba(60,40,70,.45)" stroke-width="1.3" fill="none"/><g style="opacity:var(--bulb,.6)">${bu}</g>
+<rect x="20" y="76" width="58" height="72" rx="3" fill="#fff6ee" stroke="#b98a6a" stroke-width="5"/><path d="M49 126c-14-10-16-22-8-26 4-2 8 0 8 4 0-4 4-6 8-4 8 4 6 16-8 26z" fill="#e8457c" opacity=".85"/>
+<rect x="10" y="196" width="94" height="7" rx="2" fill="#b98a6a"/><path d="M22 203v10M92 203v10" stroke="#9a6f55" stroke-width="3"/>
+<rect x="16" y="166" width="9" height="30" fill="#9b7fd1"/><rect x="26" y="170" width="8" height="26" fill="#f6c26b"/><rect x="35" y="164" width="10" height="32" fill="#e48aa9"/>
+<path d="M62 184h24l-3 12H65z" fill="#d98a64"/><path d="M74 184C64 168 66 158 74 152C82 158 84 168 74 184Z" fill="#4f9a52"/><path d="M74 184C60 178 58 170 62 166C70 168 74 176 74 184Z" fill="#6fae63"/><path d="M74 184C88 178 90 170 86 166C78 168 74 176 74 184Z" fill="#3f7a48"/>
+<path d="M296 68H400" stroke="#a87f98" stroke-width="4" stroke-linecap="round"/><rect x="306" y="78" width="74" height="112" rx="4" style="fill:var(--win,#fff4d6)" opacity=".92"/><g style="opacity:var(--night,0)"><circle cx="362" cy="106" r="10" fill="#fffbe6"/><circle cx="366" cy="103" r="9" style="fill:var(--win,#283464)"/><circle cx="320" cy="96" r="1.3" fill="#fff"/><circle cx="332" cy="150" r="1.1" fill="#fff"/><circle cx="352" cy="164" r="1.4" fill="#fff"/><circle cx="324" cy="176" r="1" fill="#fff"/></g><path d="M343 78V190M306 134H380" stroke="#a87f98" stroke-width="3"/><rect x="306" y="78" width="74" height="112" rx="4" fill="none" stroke="#a87f98" stroke-width="5"/><rect x="300" y="190" width="86" height="6" rx="2" fill="#a87f98"/>
+<path d="M382 68C368 112 374 152 362 200L400 200L400 68Z" fill="#e9a6c4" opacity=".75"/><path d="M382 68C374 122 382 162 374 200" stroke="rgba(255,255,255,.45)" fill="none" stroke-width="2"/>
+${bf(250,120,1,"#f48fb1")}${bf(130,235,.8,"#b69cf0")}
+<path d="M0 362H400M0 392H400M0 428H400M0 462H400" stroke="rgba(120,70,100,.12)" stroke-width="2"/>
+<ellipse cx="200" cy="404" rx="126" ry="17" fill="#fff" opacity=".4"/><ellipse cx="200" cy="404" rx="118" ry="14" fill="none" stroke="#fff" stroke-opacity=".7" stroke-dasharray="2 5"/>
+<circle cx="53" cy="354" r="24" fill="#ffd98a" opacity=".22"/><rect x="38" y="354" width="30" height="36" rx="5" fill="#fff" opacity=".6"/><rect x="40" y="368" width="26" height="20" rx="3" fill="#ffe9d2"/><path d="M53 368V358" stroke="#5b4040" stroke-width="1.5"/><ellipse class="flame" cx="53" cy="353" rx="3" ry="6" fill="#ffcf5a"/>
+<path d="M82 374h20l-2 14H84z" fill="#d98a64"/><path d="M92 374c-8-10-6-16 0-20 6 4 8 10 0 20zM92 374c-12-4-14-10-10-14 6 0 10 6 10 14zM92 374c12-4 14-10 10-14-6 0-10 6-10 14z" fill="#6fae63"/>
+<rect x="296" y="378" width="70" height="12" rx="2" fill="#7db7f0"/><rect x="300" y="366" width="62" height="12" rx="2" fill="#f6c26b"/><rect x="304" y="354" width="54" height="12" rx="2" fill="#e48aa9"/>
+<path d="M318 336h24q0 18-12 18q-12 0-12-18z" fill="#fff"/><path d="M342 340q9 2 0 10" stroke="#fff" stroke-width="3" fill="none"/><ellipse cx="330" cy="337" rx="12" ry="2.5" fill="#8a5a4a"/><path d="M326 330q-4-6 0-10M334 330q-4-6 0-10" stroke="#fff" stroke-opacity=".6" fill="none"/>${pe}</svg>`})();
+function bouquet(list,thirsty){return DECO+(GL?`<div class="gl"></div>`:bouquetSVG(list,thirsty))}
 function onboard(){const v=store.get("bq_start")||"";
 app.innerHTML=`<section class="hero">${mini(FL[0])}
 <h1>Un bouquet qui pousse avec nous</h1>
@@ -308,25 +380,78 @@ app.innerHTML=`<section class="hero"><h1>Ça fait ${N} mois, ça fait ${N} fleur
 <div class="stage" style="margin-top:14px">${bouquet(ids(N),false)}</div>
 <div class="card" style="margin-top:14px"><p style="margin-top:0">${txt}</p><p class="mute" style="margin-bottom:0">Une nouvelle fleur, tirée au hasard, s’ajoute à chaque mois d’anniversaire. Arrose le bouquet chaque jour pour qu’il reste en pleine forme.</p></div>
 <button class="btn" style="margin-top:14px" id="go">Découvrir mon bouquet</button>`;
-mount3d(document.querySelector(".stage"),ids(N),false);$("#go").onclick=()=>{store.set("bq_seen","1");render()}}
+applyTod(document.querySelector(".stage"),tod());mount3d(document.querySelector(".stage"),ids(N),false);$("#go").onclick=()=>{store.set("bq_seen","1");store.set("bq_n",String(N));render()}}
 function tabs(){return `<div class="tabs" role="tablist"><button data-v="board" aria-current="${view==="board"}">Bouquet</button><button data-v="flowers" aria-current="${view==="flowers"}">Mes fleurs</button></div>`}
 function bindTabs(){document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{view=b.dataset.v;render()})}
-function board(){const s=store.get("bq_start"),N=monthsSince(s),list=ids(N),last=store.get("bq_last"),done=last===today(),streak=+store.get("bq_streak")||0;
+const NT={w:["#1c1740","#2b2350","#3b2d5e"],t:["#3a2d52","#251b38"],win:"#283464",gl:[150,170,255,.35],hm:.38,di:.45,dc:"#9fb4ff",lp:1,dim:.62,nt:1};
+const TOD=[{h:0,...NT},{h:5,...NT},
+{h:7,w:["#f3d6e6","#fbd9c9","#ffe6c7"],t:["#e9c3cf","#c9929f"],win:"#ffe0b0",gl:[255,210,160,.7],hm:.7,di:.8,dc:"#ffd2a8",lp:.2,dim:.95,nt:0},
+{h:9,w:["#e9e1fb","#f7dcea","#fde9de"],t:["#ebcbdc","#cfa6c0"],win:"#fff3cf",gl:[255,244,214,.8],hm:.9,di:1.1,dc:"#fff1dd",lp:0,dim:1,nt:0},
+{h:13,w:["#e4daf8","#f6d9e8","#fde7dd"],t:["#e9c9da","#c9a0bd"],win:"#fff8e0",gl:[255,250,230,.85],hm:.9,di:1.2,dc:"#ffffff",lp:0,dim:1,nt:0},
+{h:17,w:["#f1c9d8","#f7bfa0","#ffd7a1"],t:["#e2b3b0","#b98692"],win:"#ffb36e",gl:[255,170,90,.7],hm:.7,di:1,dc:"#ffb980",lp:.3,dim:.92,nt:0},
+{h:19.5,w:["#5a3d7a","#8a4f86","#c8707a"],t:["#6c4b73","#3f2c52"],win:"#f08a5a",gl:[240,120,100,.5],hm:.5,di:.6,dc:"#ff9a7a",lp:.7,dim:.75,nt:.25},
+{h:21.5,...NT},{h:24,...NT}];
+function tod(d=new Date()){const h=d.getHours()+d.getMinutes()/60;let i=TOD.length-2;while(i>0&&TOD[i].h>h)i--;
+const a=TOD[i],b=TOD[i+1],t=(h-a.h)/(b.h-a.h),L=(x,y)=>x+(y-x)*t,C=(x,y)=>mix(x,y,t),cl=v=>Math.max(-1,Math.min(1,v));
+return{w:a.w.map((c,k)=>C(c,b.w[k])),tb:a.t.map((c,k)=>C(c,b.t[k])),win:C(a.win,b.win),gl:a.gl.map((v,k)=>L(v,b.gl[k])),hm:L(a.hm,b.hm),di:L(a.di,b.di),dc:C(a.dc,b.dc),lp:L(a.lp,b.lp),dim:L(a.dim,b.dim),nt:L(a.nt,b.nt),sx:cl((h-12)/6)*8,sy:10-Math.abs(cl((h-12)/7))*5}}
+function applyTod(st,T){if(!st)return;const s=st.style,g=T.gl;
+s.setProperty("--w1",T.w[0]);s.setProperty("--w2",T.w[1]);s.setProperty("--w3",T.w[2]);s.setProperty("--tb1",T.tb[0]);s.setProperty("--tb2",T.tb[1]);
+s.setProperty("--glow",`rgba(${Math.round(g[0])},${Math.round(g[1])},${Math.round(g[2])},${g[3].toFixed(2)})`);
+s.setProperty("--bk",T.nt>.5?"170,150,255":"255,255,255");s.setProperty("--win",T.win);s.setProperty("--night",T.nt.toFixed(2));s.setProperty("--dim",T.dim.toFixed(2));s.setProperty("--bulb",(.5+.5*T.nt).toFixed(2))}
+function applyLights(L,T){L.hm.intensity=T.hm;L.d.intensity=T.di;L.d.color.set(T.dc);L.d.position.set(T.sx,T.sy,8);L.lp.intensity=T.lp*1.1;L.f.intensity=.35*(1-T.nt*.6)}
+const sfx={c:null,g:null,
+init(){try{if(this.c)return;const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=this.c=new C(),n=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+const s=c.createBufferSource();s.buffer=n;s.loop=true;const f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=2200;f.Q.value=.7;const g=this.g=c.createGain();g.gain.value=0;s.connect(f);f.connect(g);g.connect(c.destination);s.start()}catch(e){}},
+pour(on){try{if(this.g)this.g.gain.setTargetAtTime(on?.16:0,this.c.currentTime,.06)}catch(e){}},
+chime(){try{const c=this.c;if(!c)return;[880,1318].forEach((f,k)=>{const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+k*.12;o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.6);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+.7)})}catch(e){}}};
+const CAN=`<div class="can" id="can" role="button" tabindex="0" aria-label="Arrosoir : fais-le glisser sur le bouquet"><svg viewBox="0 0 64 52" aria-hidden="true"><path d="M14 18h30a4 4 0 0 1 4 4v20a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6V22a4 4 0 0 1 2-4z" fill="#7db7f0"/><path d="M12 30L3 12l6-3 10 17z" fill="#5a9be0"/><path d="M0 10l8-6 3 5-8 6z" fill="#3f7fcb"/><path d="M48 26c11 0 11 16 0 16" fill="none" stroke="#5a9be0" stroke-width="5"/><path d="M20 18c0-10 22-10 24 0" fill="none" stroke="#5a9be0" stroke-width="4"/><path d="M20 26v14" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-linecap="round"/></svg><span>Glisse-moi sur le bouquet</span></div><div class="pbar" id="pbar"><i></i></div>`;
+const bloomUI=(f,N)=>`<div class="bloomov" id="bo"><div class="bcard"><h2>Une nouvelle fleur pour vos ${N} mois</h2><p><b>${f.name}</b><br><span class="mute">${f.m}</span></p><button class="btn" id="bok">Voir mon bouquet</button></div></div>`;
+function wireCan(stage,done){const can=$("#can");if(!can)return;let on=false,ox=0,oy=0,pour=0,last=0,dropT=0,vt=0;const pb=$("#pbar");
+const inZone=()=>{const s=stage.getBoundingClientRect(),c=can.getBoundingClientRect(),x=(c.left+c.width*.2-s.left)/s.width,y=(c.top+c.height*.5-s.top)/s.height;return x>.15&&x<.85&&y>.05&&y<.75};
+const spawn=()=>{const s=stage.getBoundingClientRect(),c=can.getBoundingClientRect(),i=document.createElement("i"),r=$("#rain");if(!r)return;i.style.left=(c.left-s.left+2)+"px";i.style.top=(c.top-s.top+c.height*.35)+"px";i.style.animationDuration=".8s";r.appendChild(i);setTimeout(()=>i.remove(),900)};
+const tick=now=>{if(!on)return;requestAnimationFrame(tick);const dt=Math.min(60,now-last);last=now;const z=inZone();can.classList.toggle("pour",z);sfx.pour(z);
+if(z){pour+=dt;dropT+=dt;vt+=dt;if(dropT>70){dropT=0;spawn()}if(vt>140){vt=0;if(navigator.vibrate)navigator.vibrate(18)}
+pb.classList.add("on");pb.firstChild.style.width=Math.min(100,pour/2400*100)+"%";if(pour>=2400){on=false;sfx.pour(false);done()}}};
+can.onpointerdown=e=>{e.preventDefault();sfx.init();on=true;can.setPointerCapture(e.pointerId);can.classList.add("drag");const s=stage.getBoundingClientRect(),c=can.getBoundingClientRect();ox=e.clientX-c.left;oy=e.clientY-c.top;
+can.style.right="auto";can.style.bottom="auto";can.style.left=(c.left-s.left)+"px";can.style.top=(c.top-s.top)+"px";last=performance.now();requestAnimationFrame(tick)};
+can.onpointermove=e=>{if(!on)return;const s=stage.getBoundingClientRect();can.style.left=Math.max(0,Math.min(s.width-can.offsetWidth,e.clientX-s.left-ox))+"px";can.style.top=Math.max(0,Math.min(s.height-can.offsetHeight,e.clientY-s.top-oy))+"px"};
+can.onpointerup=can.onpointercancel=()=>{on=false;can.classList.remove("drag","pour");sfx.pour(false)};
+can.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();done()}}}
+function makeButterfly(){const g=new THREE.Group(),sh=new THREE.Shape();sh.moveTo(0,0);sh.bezierCurveTo(.3,.7,1.2,1,1.1,.35);sh.bezierCurveTo(1.05,-.1,.6,-.55,0,0);
+const geo=new THREE.ShapeGeometry(sh,10);geo.rotateX(-Math.PI/2);const mat=new THREE.MeshStandardMaterial({color:0xf48fb1,side:THREE.DoubleSide,roughness:.5,emissive:0x5a1030,emissiveIntensity:.3});
+const wl=new THREE.Group(),wr=new THREE.Group(),a=new THREE.Mesh(geo,mat),b=new THREE.Mesh(geo,mat);b.scale.x=-1;wr.add(a);wl.add(b);
+const body=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.7,6),new THREE.MeshStandardMaterial({color:0x4a2a3a}));body.rotation.x=Math.PI/2;g.add(wr,wl,body);return{g,wr,wl}}
+function makeBee(){const g=new THREE.Group(),bg=new THREE.SphereGeometry(.2,12,10);bg.scale(1,1,1.5);const pa=bg.attributes.position,cl=[];
+for(let i=0;i<pa.count;i++){const y=Math.floor((pa.getZ(i)+.3)/.1)%2;cl.push(...(y?[.03,.02,.02]:[.9,.55,.02]))}bg.setAttribute("color",new THREE.Float32BufferAttribute(cl,3));
+const body=new THREE.Mesh(bg,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.6})),head=new THREE.Mesh(new THREE.SphereGeometry(.12,8,6),new THREE.MeshStandardMaterial({color:0x1a1010}));head.position.z=.33;
+const wm=new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.55,side:THREE.DoubleSide,roughness:.2}),wg=new THREE.CircleGeometry(.16,8);wg.scale(1,2,1);wg.rotateX(-Math.PI/2);
+const w1=new THREE.Group(),w2=new THREE.Group(),m1=new THREE.Mesh(wg,wm),m2=new THREE.Mesh(wg,wm);m1.position.x=.2;m2.position.x=-.2;w1.add(m1);w2.add(m2);w1.position.set(.08,.17,0);w2.position.set(-.08,.17,0);g.add(body,head,w1,w2);return{g,w1,w2}}
+function goldGeo(){const b={p:[],c:[],i:[]};petal(b,{w:.6,l:.8,cup:.6,curl:.4,c:[hx("#b8860b"),hx("#ffd24a"),hx("#fff0a0")]},new M4(),rg("gold"));
+const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(b.p,3));g.setAttribute("color",new THREE.Float32BufferAttribute(b.c,3));g.setIndex(b.i);g.computeVertexNormals();g.translate(0,-.4,0);return g}
+const LETTER=`<button class="letter" id="ltr" aria-label="Une lettre est posée sur la table, touche-la pour l’ouvrir"><svg viewBox="0 0 80 60" aria-hidden="true"><ellipse cx="40" cy="55" rx="34" ry="3.5" fill="rgba(40,20,50,.25)"/><rect x="4" y="8" width="72" height="44" rx="3" fill="#fff6e4" stroke="#d9c39a" stroke-width="1.2"/><path d="M4 52L30 30M76 52L50 30" stroke="#e5d3ac" stroke-width="1"/><path d="M4 10L40 34L76 10" fill="#f6e7c8" stroke="#d9c39a" stroke-width="1.2" stroke-linejoin="round"/><path d="M40 46c-9-6-12-12-7-16 3-2.5 6-.5 7 2 1-2.5 4-4.5 7-2 5 4 2 10-7 16z" fill="#d93a4f" stroke="#a82638" stroke-width=".8"/><path d="M34 32c1-2 3-2.5 4-1" stroke="#fff" stroke-opacity=".6" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg></button>`;
+const LETTER_UI=`<div class="ltov" id="ltov" role="dialog" aria-label="Lettre"><div class="paper"><svg class="bigheart" viewBox="0 0 64 60" aria-hidden="true"><path d="M32 56C10 40 2 28 8 17 13 8 26 8 32 18 38 8 51 8 56 17 62 28 54 40 32 56z" fill="#e0334f"/><path d="M16 20c2-4 7-5 10-2" stroke="#fff" stroke-opacity=".55" stroke-width="3" fill="none" stroke-linecap="round"/></svg><p class="love">Je t’aime</p><button class="btn" id="ltx">Refermer la lettre</button></div></div>`;
+function openLetter(stage){if($("#ltov"))return;stage.insertAdjacentHTML("beforeend",LETTER_UI);const o=$("#ltov"),close=()=>{o.remove();document.removeEventListener("keydown",kd)},kd=e=>{if(e.key==="Escape")close()};
+$("#ltx").onclick=close;o.onclick=e=>{if(e.target===o)close()};document.addEventListener("keydown",kd);$("#ltx").focus();if(navigator.vibrate)navigator.vibrate(15)}
+const TIER=[[0,"#9aa0b4"],[1,"#4aa3e8"],[3,"#3dbb76"],[7,"#f2b01e"],[14,"#f07a2a"],[30,"#e8457c"],[60,"#8a5be0"]];
+const yest=()=>{const y=new Date();y.setDate(y.getDate()-1);return iso(y)};
+function curStreak(){const l=store.get("bq_last");return l===today()||l===yest()?(+store.get("bq_streak")||0):0}
+function badge(n){const c=TIER.filter(t=>n>=t[0]).pop()[1];return `<div class="streak" id="sk" style="--sc:${c}" title="${n} jour${n>1?"s":""} d’affilée"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13z" fill="${c}"/><path d="M9 14a3 3 0 0 0 2 3" stroke="#fff" stroke-opacity=".7" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg><b>${n}</b><span>jour${n>1?"s":""} d’affilée</span></div>`}
+function board(){const s=store.get("bq_start"),N=monthsSince(s),list=ids(N),last=store.get("bq_last"),done=last===today(),streak=curStreak(),lvl=done?0:(last===yest()||!last?0.6:1);const sn=store.get("bq_n"),bloom=sn!==null&&N>+sn;if(sn===null)store.set("bq_n",String(N));
 const nx=monthDate(s,N+1),days=Math.ceil((nx-new Date(new Date().setHours(0,0,0,0)))/864e5);
-app.innerHTML=`${tabs()}<div class="stage" id="stage">${bouquet(list,!done)}<div class="rain" id="rain"></div></div>
+app.innerHTML=`${tabs()}<div class="stage" id="stage">${bouquet(list,lvl)}<div class="rain" id="rain"></div>${badge(streak)}${bloom?bloomUI(list[N-1],N):""}${done?"":CAN}${LETTER}</div>
 <div class="cap" id="cap" aria-live="polite">${caption}</div>
-<p class="status mute" id="st">${done?"Ton bouquet est arrosé pour aujourd’hui. À demain !":"Ton bouquet a soif."}${streak>1?` ${streak} jours d’affilée.`:""}</p>
+<p class="status mute" id="st">${done?"Ton bouquet est arrosé pour aujourd’hui. À demain !":lvl>.9?"Ton bouquet est tout fané… arrose-le vite !":"Ton bouquet a soif."}${streak>1?` ${streak} jours d’affilée.`:""}</p>
 <button class="btn" id="w" ${done?"disabled":""}>${done?"Arrosé aujourd’hui":"Arroser le bouquet"}</button>
 <p class="mute" style="text-align:center;margin-top:14px">${N} mois ensemble, ${N} fleur${N>1?"s":""}. Prochaine fleur ${days<=1?"demain":"dans "+days+" jours"}.</p>`;
 bindTabs();
 const pick=i=>{const f=list[i];caption=`<b>${f.name}</b><br><span class="mute">Fleur du mois ${i+1}. ${f.m}</span>`;$("#cap").innerHTML=caption};
-const g3=mount3d($("#stage"),list,!done,pick);document.querySelectorAll(".fl").forEach(g=>{g.onclick=()=>pick(+g.dataset.i);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(+g.dataset.i)}}});
-$("#w").onclick=()=>{const y=new Date();y.setDate(y.getDate()-1);
+applyTod($("#stage"),tod());const g3=mount3d($("#stage"),list,lvl,pick,{bloom:bloom?N-1:null,streak});const lt=$("#ltr");if(lt)lt.onclick=()=>openLetter($("#stage"));const bo=$("#bok");if(bo)bo.onclick=()=>{store.set("bq_n",String(N));$("#bo").remove();if(g3)g3.endBloom()};document.querySelectorAll(".fl").forEach(g=>{g.onclick=()=>pick(+g.dataset.i);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(+g.dataset.i)}}});
+const doWater=()=>{if($("#w").disabled)return;sfx.init();sfx.chime();if(navigator.vibrate)navigator.vibrate([40,60,40]);const y=new Date();y.setDate(y.getDate()-1);
 const st=last===iso(y)?streak+1:1;store.set("bq_last",today());store.set("bq_streak",String(st));
 let r="";for(let k=0;k<18;k++)r+=`<i style="left:${8+Math.random()*84}%;animation-delay:${Math.random()*.6}s"></i>`;
 $("#rain").innerHTML=r;$("#w").disabled=true;$("#w").textContent="Arrosé aujourd’hui";
-const sv=document.querySelector("svg.b");if(sv)sv.classList.remove("thirsty");if(g3)g3.water();
-$("#st").textContent="Ton bouquet est arrosé pour aujourd’hui. À demain !"+(st>1?` ${st} jours d’affilée.`:"")}}
+const sv=document.querySelector("svg.b");if(sv)sv.classList.remove("thirsty");if(g3)g3.water(st);$("#sk").outerHTML=badge(st);{const cn=$("#can"),pb=$("#pbar");if(cn)cn.remove();if(pb)pb.remove()}
+$("#st").textContent="Ton bouquet est arrosé pour aujourd’hui. À demain !"+(st>1?` ${st} jours d’affilée.`:"")};wireCan($("#stage"),doWater);$("#w").onclick=doWater}
 function flowers(){const s=store.get("bq_start"),N=monthsSince(s),list=ids(N),nx=monthDate(s,N+1);
 const rows=list.map((f,i)=>`<div class="card row">${mini(f)}<div><div class="t">${f.name}</div><div class="mute" style="font-size:.85rem">Mois ${i+1}, ${fmt(monthDate(s,i+1),{month:"long",year:"numeric"})}</div><div>${f.m}</div></div></div>`).reverse().join("");
 app.innerHTML=`${tabs()}<h2>Mes fleurs</h2><p class="mute">${N} fleur${N>1?"s":""} sur ${N} mois ensemble.</p><div class="list">
