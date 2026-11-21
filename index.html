@@ -56,6 +56,7 @@ input[type=date]{font:inherit;width:100%;padding:14px;border-radius:14px;border:
 @media (prefers-reduced-motion:reduce){.sw{animation:none}.head{transition:none}.rain i{animation-duration:.01s}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <main id="app"></main>
@@ -87,6 +88,26 @@ const FL=[
 {id:"gypsophile",name:"Gypsophile",m:"L’amour éternel et la tendresse légère.",n:5,rx:4,ry:6,c:"#fdfaff",d:"#e6f0e0"}
 ];
 const $=s=>document.querySelector(s),app=$("#app");
+const SUPABASE_URL = "https://orgcqeyzimowoobamvkp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_SN3SJDwCM3TEe2ZhLreFiQ_uKSGuQt3";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+async function ensureAuth() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (error) throw error;
+  if (session) return session.user;
+
+  const { data, error: signInError } = await supabase.auth.signInAnonymously();
+
+  if (signInError) throw signInError;
+
+  return data.user;
+};
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let view="board",editing=false,caption="Touche une fleur pour la découvrir.";
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
@@ -95,9 +116,12 @@ const parse=s=>{const [y,m,d]=s.split("-").map(Number);return{y,m,d}};
 const fmt=(d,o)=>d.toLocaleDateString("fr-FR",o||{day:"numeric",month:"long",year:"numeric"});
 function monthsSince(s){const a=parse(s),n=new Date();let k=(n.getFullYear()-a.y)*12+(n.getMonth()+1-a.m);if(n.getDate()<a.d)k--;return Math.max(0,k)}
 function monthDate(s,k){const a=parse(s);return new Date(a.y,a.m-1+k,a.d)}
-function ids(N){let a=[];try{a=JSON.parse(store.get("bq_ids")||"[]")}catch(e){}
-while(a.length<N){let p=FL.filter(f=>!a.includes(f.id));if(!p.length)p=FL;a.push(p[Math.floor(Math.random()*p.length)].id)}
-store.set("bq_ids",JSON.stringify(a));return a.slice(0,N).map(i=>FL.find(f=>f.id===i))}
+
+function ids(N){
+  const saved = bouquetState?.flower_ids || [];
+  return saved.slice(0,N).map(id=>FL.find(f=>f.id===id)).filter(Boolean);
+}
+
 const LOOK={
 rose:{t:"ros",c:["#f2566b","#c8233f","#5e0818"],R:5,n:7,w:.66},
 tulipe:{t:"tul",c:["#ffa6bd","#f06a8d","#b8264f"]},
@@ -299,49 +323,389 @@ const bx=new THREE.Box3().setFromObject(g),c=bx.getCenter(new V3()),s=bx.getSize
 IR.render(sc,cam);return IC[f.id]=IR.domElement.toDataURL("image/png")}
 const mini=f=>{if(GL){try{return `<img src="${icon3d(f)}" alt="">`}catch(e){}}return `<svg viewBox="-36 -40 72 74" aria-hidden="true">${defs([f.id])}${head(f,1.05)}</svg>`};
 function bouquet(list,thirsty){return GL?`<div class="gl"></div>`:bouquetSVG(list,thirsty)}
-function onboard(){const v=store.get("bq_start")||"";
-app.innerHTML=`<section class="hero">${mini(FL[0])}
-<h1>Un bouquet qui pousse avec nous</h1>
-<p class="mute">Chaque mois passé ensemble fait éclore une nouvelle fleur. Il ne te reste qu’à l’arroser une fois par jour.</p></section>
-<form id="f" class="card" style="margin-top:18px"><label for="d"><b>Quel jour êtes-vous devenus un couple ?</b></label>
-<input id="d" type="date" required max="${today()}" value="${v}"><button class="btn" type="submit">Faire pousser notre bouquet</button></form>`;
-$("#f").onsubmit=e=>{e.preventDefault();const val=$("#d").value;if(!val)return;store.set("bq_start",val);store.set("bq_seen","");editing=false;view="board";render()}}
-function reveal(){const s=store.get("bq_start"),N=monthsSince(s),a=parse(s),nx=monthDate(s,N+1);
-const txt=N===0?`Pas encore un mois ensemble : ta première fleur éclora le ${fmt(nx,{day:"numeric",month:"long"})}.`:`Depuis le ${fmt(new Date(a.y,a.m-1,a.d))}, cela fait <b>${N} mois</b>. Tu as donc <b>${N} fleur${N>1?"s":""}</b> dans ton bouquet.`;
-app.innerHTML=`<section class="hero"><h1>Ça fait ${N} mois, ça fait ${N} fleur${N>1?"s":""}</h1></section>
-<div class="stage" style="margin-top:14px">${bouquet(ids(N),false)}</div>
-<div class="card" style="margin-top:14px"><p style="margin-top:0">${txt}</p><p class="mute" style="margin-bottom:0">Une nouvelle fleur, tirée au hasard, s’ajoute à chaque mois d’anniversaire. Arrose le bouquet chaque jour pour qu’il reste en pleine forme.</p></div>
-<button class="btn" style="margin-top:14px" id="go">Découvrir mon bouquet</button>`;
-mount3d(document.querySelector(".stage"),ids(N),false);$("#go").onclick=()=>{store.set("bq_seen","1");render()}}
-function tabs(){return `<div class="tabs" role="tablist"><button data-v="board" aria-current="${view==="board"}">Bouquet</button><button data-v="flowers" aria-current="${view==="flowers"}">Mes fleurs</button></div>`}
-function bindTabs(){document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{view=b.dataset.v;render()})}
-function board(){const s=store.get("bq_start"),N=monthsSince(s),list=ids(N),last=store.get("bq_last"),done=last===today(),streak=+store.get("bq_streak")||0;
-const nx=monthDate(s,N+1),days=Math.ceil((nx-new Date(new Date().setHours(0,0,0,0)))/864e5);
-app.innerHTML=`${tabs()}<div class="stage" id="stage">${bouquet(list,!done)}<div class="rain" id="rain"></div></div>
-<div class="cap" id="cap" aria-live="polite">${caption}</div>
-<p class="status mute" id="st">${done?"Ton bouquet est arrosé pour aujourd’hui. À demain !":"Ton bouquet a soif."}${streak>1?` ${streak} jours d’affilée.`:""}</p>
-<button class="btn" id="w" ${done?"disabled":""}>${done?"Arrosé aujourd’hui":"Arroser le bouquet"}</button>
-<p class="mute" style="text-align:center;margin-top:14px">${N} mois ensemble, ${N} fleur${N>1?"s":""}. Prochaine fleur ${days<=1?"demain":"dans "+days+" jours"}.</p>`;
-bindTabs();
-const pick=i=>{const f=list[i];caption=`<b>${f.name}</b><br><span class="mute">Fleur du mois ${i+1}. ${f.m}</span>`;$("#cap").innerHTML=caption};
-const g3=mount3d($("#stage"),list,!done,pick);document.querySelectorAll(".fl").forEach(g=>{g.onclick=()=>pick(+g.dataset.i);g.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(+g.dataset.i)}}});
-$("#w").onclick=()=>{const y=new Date();y.setDate(y.getDate()-1);
-const st=last===iso(y)?streak+1:1;store.set("bq_last",today());store.set("bq_streak",String(st));
-let r="";for(let k=0;k<18;k++)r+=`<i style="left:${8+Math.random()*84}%;animation-delay:${Math.random()*.6}s"></i>`;
-$("#rain").innerHTML=r;$("#w").disabled=true;$("#w").textContent="Arrosé aujourd’hui";
-const sv=document.querySelector("svg.b");if(sv)sv.classList.remove("thirsty");if(g3)g3.water();
-$("#st").textContent="Ton bouquet est arrosé pour aujourd’hui. À demain !"+(st>1?` ${st} jours d’affilée.`:"")}}
-function flowers(){const s=store.get("bq_start"),N=monthsSince(s),list=ids(N),nx=monthDate(s,N+1);
-const rows=list.map((f,i)=>`<div class="card row">${mini(f)}<div><div class="t">${f.name}</div><div class="mute" style="font-size:.85rem">Mois ${i+1}, ${fmt(monthDate(s,i+1),{month:"long",year:"numeric"})}</div><div>${f.m}</div></div></div>`).reverse().join("");
-app.innerHTML=`${tabs()}<h2>Mes fleurs</h2><p class="mute">${N} fleur${N>1?"s":""} sur ${N} mois ensemble.</p><div class="list">
-<div class="card row" style="border-style:dashed"><svg viewBox="-30 -30 60 60" aria-hidden="true"><circle r="12" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="4 4"/></svg><div><div class="t">Prochaine fleur</div><div class="mute">Elle éclora le ${fmt(nx,{day:"numeric",month:"long",year:"numeric"})}.</div></div></div>${rows}</div>
-<button class="link" id="ed">Modifier la date de notre couple</button>`;
-bindTabs();$("#ed").onclick=()=>{editing=true;render()}}
-function render(){kill3d();window.scrollTo(0,0);
-if(!store.get("bq_start")||editing)return onboard();
-if(!store.get("bq_seen"))return reveal();
-view==="flowers"?flowers():board()}
+
+
+let bouquetState = null;
+let refreshTimer = null;
+let loading = false;
+
+async function syncBouquet(){
+  const bouquetId = store.get("bq_id");
+  if(!bouquetId){
+    bouquetState = null;
+    return null;
+  }
+
+  await ensureAuth();
+
+  const {data,error} = await supabase.rpc("get_bouquet_state",{
+    p_bouquet_id:bouquetId
+  });
+
+  if(error) throw error;
+
+  bouquetState = data;
+  store.set("bq_start",data.relationship_date);
+  return data;
+}
+
+function onboard(){
+  kill3d();
+
+  app.innerHTML=`
+  <section class="hero">
+    ${mini(FL[0])}
+    <h1>Un bouquet qui pousse avec nous</h1>
+    <p class="mute">Un bouquet à faire grandir et à arroser ensemble, chaque jour.</p>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>Créer notre bouquet</h2>
+    <form id="createForm">
+      <label for="pseudoCreate"><b>Ton pseudo</b></label>
+      <input id="pseudoCreate" type="text" maxlength="30" required placeholder="Ton prénom ou surnom">
+
+      <label for="d"><b>Quel jour êtes-vous devenus un couple ?</b></label>
+      <input id="d" type="date" required max="${today()}">
+
+      <button class="btn" type="submit">Créer notre bouquet</button>
+    </form>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>Rejoindre un bouquet</h2>
+    <form id="joinForm">
+      <label for="pseudoJoin"><b>Ton pseudo</b></label>
+      <input id="pseudoJoin" type="text" maxlength="30" required placeholder="Ton prénom ou surnom">
+
+      <label for="inviteCode"><b>Code d'invitation</b></label>
+      <input id="inviteCode" type="text" maxlength="8" required placeholder="Ex : A1B2C3D4">
+
+      <button class="btn" type="submit">Rejoindre notre bouquet</button>
+    </form>
+  </section>
+
+  <p id="onboardMessage" class="mute"></p>`;
+
+  $("#createForm").onsubmit=async e=>{
+    e.preventDefault();
+
+    const pseudo=$("#pseudoCreate").value.trim();
+    const date=$("#d").value;
+    const message=$("#onboardMessage");
+
+    if(!pseudo||!date)return;
+
+    message.textContent="Création du bouquet...";
+
+    try{
+      await ensureAuth();
+
+      const {data,error}=await supabase.rpc("create_bouquet",{
+        p_pseudo:pseudo,
+        p_relationship_date:date
+      });
+
+      if(error)throw error;
+
+      store.set("bq_id",data.bouquet_id);
+      store.set("bq_member_id",data.member_id);
+      store.set("bq_invite_code",data.invite_code);
+      store.set("bq_start",date);
+
+      alert("Votre bouquet a été créé ! Voici votre code d'invitation : "+data.invite_code+" À partager avec la deuxième personne.");
+
+      view="board";
+      render();
+
+    }catch(error){
+      message.textContent="Erreur : "+error.message;
+    }
+  };
+
+  $("#joinForm").onsubmit=async e=>{
+    e.preventDefault();
+
+    const pseudo=$("#pseudoJoin").value.trim();
+    const code=$("#inviteCode").value.trim().toUpperCase();
+    const message=$("#onboardMessage");
+
+    if(!pseudo||!code)return;
+
+    message.textContent="Connexion au bouquet...";
+
+    try{
+      await ensureAuth();
+
+      const {data,error}=await supabase.rpc("join_bouquet",{
+        p_pseudo:pseudo,
+        p_invite_code:code
+      });
+
+      if(error)throw error;
+
+      store.set("bq_id",data.bouquet_id);
+      store.set("bq_member_id",data.member_id);
+      store.set("bq_invite_code",data.invite_code);
+
+      const {data:state,error:stateError}=await supabase.rpc("get_bouquet_state",{
+        p_bouquet_id:data.bouquet_id
+      });
+
+      if(stateError)throw stateError;
+
+      store.set("bq_start",state.relationship_date);
+
+      view="board";
+      render();
+
+    }catch(error){
+      message.textContent="Erreur : "+error.message;
+    }
+  };
+}
+
+function tabs(){
+  return `<div class="tabs" role="tablist">
+    <button data-v="board" aria-current="${view==="board"}">Bouquet</button>
+    <button data-v="flowers" aria-current="${view==="flowers"}">Mes fleurs</button>
+  </div>`;
+}
+
+function bindTabs(){
+  document.querySelectorAll(".tabs button").forEach(b=>{
+    b.onclick=()=>{
+      view=b.dataset.v;
+      render();
+    };
+  });
+}
+
+function pickFlower(i,list){
+  const f=list[i];
+  if(!f)return;
+
+  caption=`<b>${f.name}</b><br><span class="mute">Fleur du mois ${i+1}. ${f.m}</span>`;
+
+  const cap=$("#cap");
+  if(cap)cap.innerHTML=caption;
+}
+
+async function board(state){
+  const s=state.relationship_date;
+  const N=(state.flower_ids||[]).length;
+  const list=ids(N);
+  const last=state.last_watered_on;
+  const done=last===today();
+  const streak=state.watering_streak||0;
+  const nx=monthDate(s,N+1);
+  const days=Math.max(0,Math.ceil((nx-new Date(new Date().setHours(0,0,0,0)))/864e5));
+  const members=state.members||[];
+
+  const wateringMessage=done
+    ?"Le bouquet a été arrosé aujourd’hui."
+    :"Ton bouquet a soif.";
+
+  app.innerHTML=`
+    ${tabs()}
+    <div class="stage" id="stage">
+      ${bouquet(list,!done)}
+      <div class="rain" id="rain"></div>
+    </div>
+
+    <div class="cap" id="cap" aria-live="polite">${caption}</div>
+
+    <p class="status mute" id="st">
+      ${wateringMessage}${streak>1?` ${streak} jours d’affilée.`:""}
+    </p>
+
+    <button class="btn" id="w" ${done?"disabled":""}>
+      ${done?"Arrosé aujourd’hui":"Arroser le bouquet"}
+    </button>
+
+    <p class="mute" style="text-align:center;margin-top:14px">
+      ${N} mois ensemble, ${N} fleur${N>1?"s":""}.
+      Prochaine fleur ${days<=1?"demain":"dans "+days+" jours"}.
+    </p>
+
+    <p class="mute" style="text-align:center">
+      Notre bouquet : ${members.map(m=>m.pseudo).join(" & ")}
+    </p>
+
+    <p class="mute" style="text-align:center">
+      Code d’invitation : <b>${state.invite_code}</b>
+    </p>
+  `;
+
+  bindTabs();
+
+  const g3=mount3d($("#stage"),list,!done,i=>pickFlower(i,list));
+
+  document.querySelectorAll(".fl").forEach(g=>{
+    g.onclick=()=>pickFlower(+g.dataset.i,list);
+
+    g.onkeydown=e=>{
+      if(e.key==="Enter"||e.key===" "){
+        e.preventDefault();
+        pickFlower(+g.dataset.i,list);
+      }
+    };
+  });
+
+  $("#w").onclick=async()=>{
+    const button=$("#w");
+    button.disabled=true;
+    button.textContent="Arrosage...";
+
+    try{
+      const {data,error}=await supabase.rpc("water_bouquet",{
+        p_bouquet_id:state.bouquet_id
+      });
+
+      if(error)throw error;
+
+      let rain="";
+      for(let k=0;k<18;k++){
+        rain+=`<i style="left:${8+Math.random()*84}%;animation-delay:${Math.random()*.6}s"></i>`;
+      }
+
+      $("#rain").innerHTML=rain;
+
+      const sv=document.querySelector("svg.b");
+      if(sv)sv.classList.remove("thirsty");
+      if(g3)g3.water();
+
+      $("#st").textContent="Le bouquet a été arrosé par "+data.pseudo+" !"+(data.watering_streak>1?` ${data.watering_streak} jours d’affilée.`:"");
+
+      button.textContent="Arrosé aujourd’hui";
+
+      await syncBouquet();
+
+      setTimeout(()=>render(),1200);
+
+    }catch(error){
+      button.disabled=false;
+      button.textContent="Arroser le bouquet";
+      $("#st").textContent="Erreur : "+error.message;
+    }
+  };
+}
+
+function flowers(state){
+  const s=state.relationship_date;
+  const N=(state.flower_ids||[]).length;
+  const list=ids(N);
+  const nx=monthDate(s,N+1);
+
+  const rows=list.map((f,i)=>`
+    <div class="card row">
+      ${mini(f)}
+      <div>
+        <div class="t">${f.name}</div>
+        <div class="mute" style="font-size:.85rem">
+          Mois ${i+1}, ${fmt(monthDate(s,i+1),{month:"long",year:"numeric"})}
+        </div>
+        <div>${f.m}</div>
+      </div>
+    </div>
+  `).reverse().join("");
+
+  app.innerHTML=`
+    ${tabs()}
+    <h2>Mes fleurs</h2>
+    <p class="mute">${N} fleur${N>1?"s":""} sur ${N} mois ensemble.</p>
+
+    <div class="list">
+      <div class="card row" style="border-style:dashed">
+        <svg viewBox="-30 -30 60 60" aria-hidden="true">
+          <circle r="12" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="4 4"/>
+        </svg>
+        <div>
+          <div class="t">Prochaine fleur</div>
+          <div class="mute">Elle éclora le ${fmt(nx,{day:"numeric",month:"long",year:"numeric"})}.</div>
+        </div>
+      </div>
+      ${rows}
+    </div>
+  `;
+
+  bindTabs();
+}
+
+async function render(){
+  if(loading)return;
+  loading=true;
+
+  kill3d();
+  window.scrollTo(0,0);
+
+  try{
+    if(!store.get("bq_id")){
+      bouquetState=null;
+      onboard();
+      return;
+    }
+
+    const state=await syncBouquet();
+
+    if(!state){
+      onboard();
+      return;
+    }
+
+    if(view==="flowers"){
+      flowers(state);
+    }else{
+      view="board";
+      await board(state);
+    }
+
+  }catch(error){
+    kill3d();
+
+    app.innerHTML=`
+      <section class="card">
+        <h2>Impossible de charger le bouquet</h2>
+        <p class="mute">${error.message}</p>
+        <button class="btn" id="retry">Réessayer</button>
+      </section>
+    `;
+
+    $("#retry").onclick=()=>render();
+
+  }finally{
+    loading=false;
+  }
+}
+
 render();
+
+if(refreshTimer)clearInterval(refreshTimer);
+
+refreshTimer=setInterval(async()=>{
+  if(!store.get("bq_id")||document.hidden||loading)return;
+
+  try{
+    const oldState=bouquetState;
+    const newState=await syncBouquet();
+
+    if(!oldState||!newState)return;
+
+    const changed=
+      oldState.last_watered_on!==newState.last_watered_on||
+      oldState.flower_ids.length!==newState.flower_ids.length||
+      oldState.watering_streak!==newState.watering_streak;
+
+    if(changed)render();
+
+  }catch(error){
+    console.error("Synchronisation :",error);
+  }
+},10000);
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden&&store.get("bq_id"))render();
+});
 </script>
 <script>
 if ("serviceWorker" in navigator) {
